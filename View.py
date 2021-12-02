@@ -37,6 +37,7 @@ def novoRegistro():
         cursor.execute(f"INSERT INTO financas (nomeFinanca, valorFinanca, dataFinanca, categoriaFinanca)"
                        f"VALUES ('{conteudo_descricao}','{conteudo_valor}','{conteudo_data}','{conteudo_categoria}')")
         info.set('Status : Sucesso!')
+        con.commit()
     except Exception as e:
         info.set(f'Erro: {e}')
 
