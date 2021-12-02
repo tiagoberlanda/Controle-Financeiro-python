@@ -1,55 +1,46 @@
 from tkinter import *
+from tkinter.ttk import Combobox
 import pymysql
+from datetime import datetime, timedelta
+import os
+
+# Criando janela Princiapal
+app = Tk()  # Criando janela
+app.geometry('650x450')  # Tamanho da janela
+app.title('Controle de Finanças')  # Título da Janela
+
+# Criando Informativo de conexão com o Banco
+info = StringVar()      #Variavel com o valor que será exibido na tela
+info.set('Status : ')     #Setando valor na variavel
+informacao_Bd = Label(app, textvariable=info,bd=1,relief="solid", font='Arial 12')
+informacao_Bd.place(bordermode=OUTSIDE, height=20, width=500, x=30, y=150)
 
 # Crianco conexão com Banco de Dados
 def conectaBanco():
     try:
         con = pymysql.Connect(host='localhost', database='controlefinanceiro', user='root', password='')
         cursor = con.cursor()
+        info.set('Status : Conectado com sucesso!')
     except Exception as e:
-        lb_aviso = Label(app, text=f'Erro {e}')
-        lb_aviso.grid(row=10, column=1)
+        info.set('Status : Erro ao Conectar ao Banco de dados!')
 
 # Função de adicionar novo registro
 def novoRegistro():
-    try:
-        con = pymysql.Connect(host='localhost', database='controlefinanceiro', user='root', password='')
-        cursor = con.cursor()
-    except Exception as e:
-        lb_aviso = Label(app, text=f'Erro {e}')
-        lb_aviso.grid(row=10, column=1)
+    conectaBanco()
+
 
 # Função de editar um registro
 def editarRegistro():
-    try:
-        con = pymysql.Connect(host='localhost', database='controlefinanceiro', user='root', password='')
-        cursor = con.cursor()
-    except Exception as e:
-        lb_aviso = Label(app, text=f'Erro {e}')
-        lb_aviso.grid(row=10, column=1)
+    conectaBanco()
+
 
 # Função de remover um registro
 def removeRegistro():
-    try:
-        con = pymysql.Connect(host='localhost', database='controlefinanceiro', user='root', password='')
-        cursor = con.cursor()
-    except Exception as e:
-        lb_aviso = Label(app, text=f'Erro {e}')
-        lb_aviso.grid(row=10, column=1)
+    conectaBanco()
 
 # Função de atualizar um registro
 def atualizaRegistro():
-    try:
-        con = pymysql.Connect(host='localhost', database='controlefinanceiro', user='root', password='')
-        cursor = con.cursor()
-    except Exception as e:
-        lb_aviso = Label(app, text=f'Erro {e}')
-        lb_aviso.grid(row=10, column=1)
-
-# Criando janela Princiapal
-app = Tk()  # Criando janela
-app.geometry('650x450')  # Tamanho da janela
-app.title('Controle de Finanças')  # Título da Janela
+    conectaBanco()
 
 # Label e Text Box Descriçao
 descricao = Label(app, text='Descrição')
@@ -62,6 +53,19 @@ valor = Label(app, text='Valor')
 valor.grid(row=1, column=0)
 valor_Tb = Entry(app)
 valor_Tb.grid(row=1, column=1)
+
+# Label e Text Box Categoria
+categoria = Label(app, text='Categoria')
+categoria.grid(row=1, column=4)
+categoria_cb = Combobox (app, values=["Remuneração","Saúde","Transporte","Educação","Cuiadados Pessoais"])
+categoria_cb.grid(row=1, column=5)
+
+# Label e Text Box Data
+data = Label(app, text='Data')
+data.grid(row=0, column=4)
+data_Tb = Entry(app)
+data_Tb.grid(row=0, column=5)
+
 
 # Botão de Conexão
 Bt_conexao = Button(app, text='Conexão', command=conectaBanco)
