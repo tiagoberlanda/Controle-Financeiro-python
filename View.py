@@ -8,12 +8,13 @@ import os
 app = Tk()  # Criando janela
 app.geometry('650x450')  # Tamanho da janela
 app.title('Controle de Finanças')  # Título da Janela
+#app.resizable(width=False, height=False) # Trava para Não abrir tela cheia
 
-# Criando Informativo de conexão com o Banco
-info = StringVar()      #Variavel com o valor que será exibido na tela
-info.set('Status : ')     #Setando valor na variavel
+# Criando Informativo de Erros
+info = StringVar()      #Definindo variavel com o valor que será exibido na tela
+info.set('Status : ')     #Setando o texto para aparecer na tela
 informacao_Bd = Label(app, textvariable=info,bd=1,relief="solid", font='Arial 12')
-informacao_Bd.place(bordermode=OUTSIDE, height=20, width=500, x=30, y=150)
+informacao_Bd.place(bordermode=OUTSIDE, height=35, width=500, x=30, y=150)
 
 # Crianco conexão com Banco de Dados
 def conectaBanco():
@@ -26,8 +27,18 @@ def conectaBanco():
 
 # Função de adicionar novo registro
 def novoRegistro():
-    conectaBanco()
-
+    conteudo_descricao = str(descricao_Tb.get())
+    conteudo_valor = str(valor_Tb.get())
+    conteudo_categoria = str(categoria_cb.get())
+    conteudo_data = str(data_Tb.get())
+    try:
+        con = pymysql.Connect(host='localhost', database='controlefinanceiro', user='root', password='')
+        cursor = con.cursor()
+        cursor.execute(f"INSERT INTO financas (nomeFinanca, valorFinanca, dataFinanca, categoriaFinanca)"
+                       f"VALUES ('{conteudo_descricao}','{conteudo_valor}','{conteudo_data}','{conteudo_categoria}')")
+        info.set('Status : Sucesso!')
+    except Exception as e:
+        info.set(f'Erro: {e}')
 
 # Função de editar um registro
 def editarRegistro():
@@ -42,54 +53,99 @@ def removeRegistro():
 def atualizaRegistro():
     conectaBanco()
 
-# Label e Text Box Descriçao
-descricao = Label(app, text='Descrição')
-descricao.grid(row=0, column=0)
+def valores():
+    conteudo_descricao = str(descricao_Tb.get())
+    conteudo_valor = str(valor_Tb.get())
+    conteudo_categoria = str(categoria_cb.get())
+    conteudo_data = str(data_Tb.get())
+
+# Label Descrição
+descricao = Label(
+        app,
+        text='Descrição',
+        bd=0,
+        font="Arial 12",
+        relief="solid",
+        padx=5,
+        pady=5,
+        justify=LEFT,
+        anchor=W
+)
+descricao.grid(row=0, column=0) #Posição no Grid
+
+#Text Box Descrição
 descricao_Tb = Entry(app)
-descricao_Tb.grid(row=0, column=1)
+descricao_Tb.grid(row=0, column=1)  #Posição no Grid
 
-# Label e Text Box Valor
-valor = Label(app, text='Valor')
-valor.grid(row=1, column=0)
+# Label Valor
+valor = Label(app,
+              text='Valor',
+              font="Arial 12",
+              relief="solid",
+              bd=0,
+              padx=5,
+              pady=5,
+              justify=LEFT,
+              anchor=W
+)
+valor.grid(row=1, column=0) #Posição no Grid
+
+# Text Box Valor
 valor_Tb = Entry(app)
-valor_Tb.grid(row=1, column=1)
+valor_Tb.grid(row=1, column=1)  #Posição no Grid
 
-# Label e Text Box Categoria
-categoria = Label(app, text='Categoria')
-categoria.grid(row=1, column=4)
+# Label Categoria
+categoria = Label(app,
+              text='Categoria',
+              font="Arial 12",
+              relief="solid",
+              bd=0,
+              padx=5,
+              pady=5,
+              justify=LEFT,
+              anchor=W
+)
+categoria.grid(row=1, column=4) #Posição no Grid
+
+#Combobox Categoria
 categoria_cb = Combobox (app, values=["Remuneração","Saúde","Transporte","Educação","Cuiadados Pessoais"])
-categoria_cb.grid(row=1, column=5)
+categoria_cb.grid(row=1, column=5)  #Posição no Grid
 
-# Label e Text Box Data
-data = Label(app, text='Data')
-data.grid(row=0, column=4)
+# Label Data
+data = Label(app,
+            text='Data',
+            bd=0,
+            font="Arial 12",
+            relief="solid",
+            padx=5,
+            pady=5,
+            justify=LEFT,
+            anchor=W,
+)
+data.grid(row=0, column=4)  #Posição no Grid
+
+#Text Box Data
 data_Tb = Entry(app)
-data_Tb.grid(row=0, column=5)
-
+data_Tb.grid(row=0, column=5)   #Posição no Grid
 
 # Botão de Conexão
 Bt_conexao = Button(app, text='Conexão', command=conectaBanco)
-Bt_conexao.place(bordermode=OUTSIDE, height=40, width=60, x=60, y=80)
+Bt_conexao.place(bordermode=OUTSIDE, height=40, width=60, x=60, y=80)   #Posição no Grid XY
 
 # Botão de Novo
 Bt_novo = Button(app, text='Novo', command=novoRegistro)
-Bt_novo.place(bordermode=OUTSIDE, height=40, width=60, x=130, y=80)
+Bt_novo.place(bordermode=OUTSIDE, height=40, width=60, x=150, y=80) #Posição no Grid XY
 
 # Botão de Editar
 Bt_editar = Button(app, text='Editar', command=editarRegistro)
-Bt_editar.place(bordermode=OUTSIDE, height=40, width=60, x=200, y=80)
+Bt_editar.place(bordermode=OUTSIDE, height=40, width=60, x=240, y=80)   #Posição no Grid XY
 
 # Botão de Excluir
 Bt_excluir = Button(app, text='Excluir', command=removeRegistro)
-Bt_excluir.place(bordermode=OUTSIDE, height=40, width=60, x=270, y=80)
+Bt_excluir.place(bordermode=OUTSIDE, height=40, width=60, x=330, y=80)  #Posição no Grid XY
 
 # Botão de Atualizar
 Bt_atualizar = Button(app, text='Atualizar', command=atualizaRegistro)
-Bt_atualizar.place(bordermode=OUTSIDE, height=40, width=60, x=340, y=80)
-
-# Grid Principal
-# gridPrincipal_Sql = cursor.execute('select * from financas')
-# gridPrincipal = Label(app,text=cursor.fetchall())
-# gridPrincipal.grid(row=4,column=1)
+Bt_atualizar.place(bordermode=OUTSIDE, height=40, width=60, x=420, y=80)    #Posição no Grid XY
 
 app.mainloop()  # Mantem Janela Aberta
