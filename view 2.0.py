@@ -133,6 +133,11 @@ class Janela:
         except:
             info.set('Status : Erro de conexão!')
 
+        #Puxar informações para o TreeView
+        query =cursor.execute('select * from financas')
+        query2 = cursor.fetchall()
+        for i in range(0,query):
+            tv.insert("","end",values=query2)
     # Criando novo registro no banco
     def novoRegistro():
         conteudo_descricao = str(descricao_Tb.get())
@@ -186,20 +191,21 @@ class Janela:
     Bt_atualizar.place(bordermode=OUTSIDE, height=40, width=60, x=420, y=80)  # Posição no Grid XY
 
     # TreeViewer de informações
-    tv = ttk.Treeview(app, columns=('id', 'nome', 'valor','data','categoria','tipo'), show='headings')
+    global tv
+    tv = ttk.Treeview(app, columns=('id', 'nome', 'valor','categoria','data','tipo'), show='headings')
     tv.place(bordermode=OUTSIDE, height=200, width=550, x=30, y=190)
     tv.column('id',  anchor=CENTER, width=10)
     tv.column('nome', anchor=CENTER, width=80)
     tv.column('valor', anchor=CENTER, width=80)
-    tv.column('data',anchor=CENTER,width=80)
     tv.column('categoria',anchor=CENTER,width=80)
+    tv.column('data',anchor=CENTER,width=80)
     tv.column('tipo',anchor=CENTER,width=80)
 
     tv.heading('id', text='Id', anchor=CENTER)
     tv.heading('nome', text='Nome', anchor=CENTER)
     tv.heading('valor', text='Valor', anchor=CENTER)
-    tv.heading('data',text='Data',anchor=CENTER)
     tv.heading('categoria',text = 'Categoria',anchor=CENTER)
+    tv.heading('data',text='Data',anchor=CENTER)
     tv.heading('tipo',text = 'Tipo',anchor=CENTER)
 
     app.mainloop() #Mantem a janela aberta
