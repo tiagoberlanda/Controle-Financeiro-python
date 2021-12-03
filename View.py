@@ -4,19 +4,21 @@ import pymysql
 from datetime import datetime, timedelta
 import os
 
-# Criando janela Princiapal
+##### Criando janela Princiapal #####
 app = Tk()  # Criando janela
 app.geometry('650x450')  # Tamanho da janela
 app.title('Controle de Finanças')  # Título da Janela
 #app.resizable(width=False, height=False) # Trava para Não abrir tela cheia
 
-# Criando Informativo de Erros
+
+##### Criando Informativo de Erros #####
 info = StringVar()      #Definindo variavel com o valor que será exibido na tela
 info.set('Status : ')     #Setando o texto para aparecer na tela
 informacao_Bd = Label(app, textvariable=info,bd=1,relief="solid", font='Arial 12')
 informacao_Bd.place(bordermode=OUTSIDE, height=35, width=500, x=30, y=150)
 
-# Crianco conexão com Banco de Dados
+
+###### Crianco conexão com Banco de Dados #####
 def conectaBanco():
     try:
         con = pymysql.Connect(host='localhost', database='controlefinanceiro', user='root', password='')
@@ -25,42 +27,66 @@ def conectaBanco():
     except Exception as e:
         info.set('Status : Erro ao Conectar ao Banco de dados!')
 
-# Função de adicionar novo registro
+###### Função de adicionar novo registro #####
 def novoRegistro():
     conteudo_descricao = str(descricao_Tb.get())
     conteudo_valor = str(valor_Tb.get())
     conteudo_categoria = str(categoria_cb.get())
     conteudo_data = str(data_Tb.get())
+    conteudo_tipo = str(tipo_cb.get())
+
+    #Validação de dados, se tem ou não valor em todos os campos
+    if conteudo_descricao == "" or conteudo_valor == "" or conteudo_categoria == "" or conteudo_data == "" or conteudo_tipo == "":
+        info.set('Status : Preencha todas as informações!')
+    else:
+        try:
+            con = pymysql.Connect(host='localhost', database='controlefinanceiro', user='root', password='')
+            cursor = con.cursor()
+            cursor.execute(f"INSERT INTO financas (nomeFinanca, valorFinanca,tipoFinanca, dataFinanca, categoriaFinanca )"
+                           f"VALUES ('{conteudo_descricao}','{conteudo_valor}','{conteudo_tipo})','{conteudo_data}','{conteudo_categoria}'")
+            con.commit()
+            info.set('Status : Sucesso!')
+        except Exception as e:
+            info.set(f'Erro: {e}')
+            print(f'Erro: {e}')
+
+###### Função de editar um registro ######
+def editarRegistro():
     try:
         con = pymysql.Connect(host='localhost', database='controlefinanceiro', user='root', password='')
         cursor = con.cursor()
-        cursor.execute(f"INSERT INTO financas (nomeFinanca, valorFinanca, dataFinanca, categoriaFinanca)"
-                       f"VALUES ('{conteudo_descricao}','{conteudo_valor}','{conteudo_data}','{conteudo_categoria}')")
-        info.set('Status : Sucesso!')
-        con.commit()
+        info.set('Status : Conectado com sucesso!')
     except Exception as e:
-        info.set(f'Erro: {e}')
-
-# Função de editar um registro
-def editarRegistro():
-    conectaBanco()
+        info.set('Status : Erro ao Conectar ao Banco de dados!')
 
 
-# Função de remover um registro
+###### Função de remover um registro ######
 def removeRegistro():
-    conectaBanco()
+    try:
+        con = pymysql.Connect(host='localhost', database='controlefinanceiro', user='root', password='')
+        cursor = con.cursor()
+        info.set('Status : Conectado com sucesso!')
+    except Exception as e:
+        info.set('Status : Erro ao Conectar ao Banco de dados!')
 
-# Função de atualizar um registro
+###### Função de atualizar um registro #####
 def atualizaRegistro():
-    conectaBanco()
+    try:
+        con = pymysql.Connect(host='localhost', database='controlefinanceiro', user='root', password='')
+        cursor = con.cursor()
+        info.set('Status : Conectado com sucesso!')
+    except Exception as e:
+        info.set('Status : Erro ao Conectar ao Banco de dados!')
 
-def valores():
+#Nao usar?
+def Pegarvalores():
     conteudo_descricao = str(descricao_Tb.get())
     conteudo_valor = str(valor_Tb.get())
     conteudo_categoria = str(categoria_cb.get())
     conteudo_data = str(data_Tb.get())
+    conteudo_tipo = str(tipo_cb.get())
 
-# Label Descrição
+#### Label Descrição ####
 descricao = Label(
         app,
         text='Descrição',
@@ -74,11 +100,11 @@ descricao = Label(
 )
 descricao.grid(row=0, column=0) #Posição no Grid
 
-#Text Box Descrição
+##### Text Box Descrição ######
 descricao_Tb = Entry(app)
 descricao_Tb.grid(row=0, column=1)  #Posição no Grid
 
-# Label Valor
+#### Label Valor ######
 valor = Label(app,
               text='Valor',
               font="Arial 12",
@@ -91,11 +117,11 @@ valor = Label(app,
 )
 valor.grid(row=1, column=0) #Posição no Grid
 
-# Text Box Valor
+###### Text Box Valor #####
 valor_Tb = Entry(app)
 valor_Tb.grid(row=1, column=1)  #Posição no Grid
 
-# Label Categoria
+##### Label Categoria ######
 categoria = Label(app,
               text='Categoria',
               font="Arial 12",
@@ -108,11 +134,11 @@ categoria = Label(app,
 )
 categoria.grid(row=1, column=4) #Posição no Grid
 
-#Combobox Categoria
+##### Combobox Categoria ######
 categoria_cb = Combobox (app, values=["Remuneração","Saúde","Transporte","Educação","Cuiadados Pessoais"])
 categoria_cb.grid(row=1, column=5)  #Posição no Grid
 
-# Label Data
+###### Label Data ######
 data = Label(app,
             text='Data',
             bd=0,
@@ -125,9 +151,40 @@ data = Label(app,
 )
 data.grid(row=0, column=4)  #Posição no Grid
 
-#Text Box Data
+###### Text Box Data #######
 data_Tb = Entry(app)
 data_Tb.grid(row=0, column=5)   #Posição no Grid
+
+####### Label Tipo ######
+tipo_lb = Label(app,
+                text='Tipo',
+                bd=0,
+                font="Arial 12",
+                relief="solid",
+                padx=5,
+                pady=5,
+                justify=CENTER,
+                anchor=S,)
+tipo_lb.grid(row=0, column=6)  #Posição no Grid
+
+####### Combobox Tipo #######
+tipo = StringVar()
+tipo_cb = Combobox(app, values=["Receita","Despesa"])
+tipo_cb.grid(row=1, column=6)  #Posição no Grid
+
+# Label Data
+data = Label(app,
+            text='Tipo',
+            bd=0,
+            font="Arial 12",
+            relief="solid",
+            padx=5,
+            pady=5,
+            justify=LEFT,
+            anchor=W,
+)
+data.grid(row=0, column=6)  #Posição no Grid
+
 
 # Botão de Conexão
 Bt_conexao = Button(app, text='Conexão', command=conectaBanco)
