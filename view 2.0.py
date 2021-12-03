@@ -13,7 +13,7 @@ class Janela:
     ##### Criando Informativo de Erros #####
     global info
     info = StringVar()      #Definindo variavel com o valor que será exibido na tela
-    info.set('Status : ')     #Setando o texto para aparecer na tela
+    info.set('Status : Não Conectado!')     #Setando o texto para aparecer na tela
     informacao_Bd = Label(app, textvariable=info,bd=1,relief="solid", font='Arial 12')
     informacao_Bd.place(bordermode=OUTSIDE, height=35, width=500, x=30, y=150)
 
