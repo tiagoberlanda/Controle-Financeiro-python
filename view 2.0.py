@@ -1,5 +1,5 @@
 from tkinter import *
-from tkinter.ttk import Combobox
+from tkinter import ttk
 import pymysql
 
 class Janela:
@@ -15,7 +15,7 @@ class Janela:
     info = StringVar()      #Definindo variavel com o valor que será exibido na tela
     info.set('Status : Não Conectado!')     #Setando o texto para aparecer na tela
     informacao_Bd = Label(app, textvariable=info,bd=1,relief="solid", font='Arial 12')
-    informacao_Bd.place(bordermode=OUTSIDE, height=35, width=500, x=30, y=150)
+    informacao_Bd.place(bordermode=OUTSIDE, height=35, width=550, x=30, y=150)
 
     ### Criando os Elementos da Tela ####
     # Label Descrição #
@@ -71,7 +71,7 @@ class Janela:
 
     # Combobox Categoria #
     global categoria_cb
-    categoria_cb = Combobox(app, values=["Remuneração", "Saúde", "Transporte", "Educação", "Cuiadados Pessoais"])
+    categoria_cb = ttk.Combobox(app, values=["Remuneração", "Saúde", "Transporte", "Educação", "Cuiadados Pessoais"])
     categoria_cb.grid(row=1, column=5)  # Posição no Grid
 
     # Label Data #
@@ -107,7 +107,7 @@ class Janela:
     # Combobox Tipo #
     global tipo_cb
     tipo = StringVar()
-    tipo_cb = Combobox(app, values=["Receita", "Despesa"])
+    tipo_cb = ttk.Combobox(app, values=["Receita", "Despesa"])
     tipo_cb.grid(row=1, column=6)  # Posição no Grid
 
     # Label Data
@@ -122,6 +122,7 @@ class Janela:
                  anchor=W,
                  )
     data.grid(row=0, column=6)  # Posição no Grid
+
 
     # Conectando com o Banco de dados #
     def conectaBanco():
@@ -183,5 +184,22 @@ class Janela:
     # Botão de Atualizar
     Bt_atualizar = Button(app, text='Atualizar', command='')
     Bt_atualizar.place(bordermode=OUTSIDE, height=40, width=60, x=420, y=80)  # Posição no Grid XY
+
+    # TreeViewer de informações
+    tv = ttk.Treeview(app, columns=('id', 'nome', 'valor','data','categoria','tipo'), show='headings')
+    tv.place(bordermode=OUTSIDE, height=200, width=550, x=30, y=190)
+    tv.column('id',  anchor=CENTER, width=10)
+    tv.column('nome', anchor=CENTER, width=80)
+    tv.column('valor', anchor=CENTER, width=80)
+    tv.column('data',anchor=CENTER,width=80)
+    tv.column('categoria',anchor=CENTER,width=80)
+    tv.column('tipo',anchor=CENTER,width=80)
+
+    tv.heading('id', text='Id', anchor=CENTER)
+    tv.heading('nome', text='Nome', anchor=CENTER)
+    tv.heading('valor', text='Valor', anchor=CENTER)
+    tv.heading('data',text='Data',anchor=CENTER)
+    tv.heading('categoria',text = 'Categoria',anchor=CENTER)
+    tv.heading('tipo',text = 'Tipo',anchor=CENTER)
 
     app.mainloop() #Mantem a janela aberta
