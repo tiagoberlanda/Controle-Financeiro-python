@@ -269,4 +269,3 @@ class Janela():
     tv.heading('tipo', text='Tipo', anchor=CENTER)
 
     app.mainloop()  # Mantem a janela aberta
-  
